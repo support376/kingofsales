@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,26 +12,50 @@ import {
   FileCheck,
   ChevronRight,
   LogOut,
+  LogIn,
 } from "lucide-react";
 import Link from "next/link";
-import { LEVELS } from "@/lib/constants";
-
-// MVP 더미 유저
-const DUMMY_USER = {
-  nickname: "영업신입07",
-  industry: "보험",
-  experience: "1~3년",
-  income: "3천~5천만원",
-  auth_level: 1 as const,
-  level: 2,
-  points: 120,
-  likes_received: 15,
-  bio: "보험 영업 2년차, 매일 성장 중!",
-};
+import { LEVELS, INDUSTRIES, EXPERIENCE_RANGES } from "@/lib/constants";
+import { useAuth } from "@/lib/auth-context";
 
 export default function ProfilePage() {
-  const levelInfo = LEVELS.find((l) => l.level === DUMMY_USER.level);
-  const nextLevel = LEVELS.find((l) => l.level === DUMMY_USER.level + 1);
+  const router = useRouter();
+  const { user, loading, logout } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#2E75B6] border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 space-y-4 px-4">
+        <LogIn className="h-12 w-12 text-muted-foreground" />
+        <h2 className="text-lg font-bold">로그인이 필요합니다</h2>
+        <p className="text-sm text-muted-foreground text-center">
+          프로필을 확인하려면 먼저 로그인해주세요.
+        </p>
+        <Link href="/login">
+          <Button className="bg-[#2E75B6] hover:bg-[#1B3A5C] text-white">
+            로그인하기
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const levelInfo = LEVELS.find((l) => l.level === user.level);
+  const nextLevel = LEVELS.find((l) => l.level === user.level + 1);
+  const industryLabel = INDUSTRIES.find((i) => i.value === user.industry)?.label || user.industry;
+  const expLabel = EXPERIENCE_RANGES.find((e) => e.value === user.experience_years)?.label || user.experience_years;
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+  };
 
   return (
     <div className="space-y-4 px-4 py-4">
@@ -39,21 +64,21 @@ export default function ProfilePage() {
         <CardContent className="p-6 flex items-center gap-4">
           <Avatar className="h-16 w-16">
             <AvatarFallback className="text-lg bg-[#2E75B6] text-white">
-              {DUMMY_USER.nickname[0]}
+              {user.nickname[0]}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 space-y-1">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold">{DUMMY_USER.nickname}</h2>
-              {DUMMY_USER.auth_level >= 2 && (
+              <h2 className="text-lg font-bold">{user.nickname}</h2>
+              {user.auth_level >= 2 && (
                 <Badge className="bg-[#2E75B6] text-white text-xs">인증</Badge>
               )}
             </div>
-            <p className="text-sm text-muted-foreground">{DUMMY_USER.bio}</p>
+            <p className="text-sm text-muted-foreground">{user.bio}</p>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{DUMMY_USER.industry}</span>
+              <span>{industryLabel}</span>
               <span>·</span>
-              <span>{DUMMY_USER.experience}</span>
+              <span>{expLabel}</span>
             </div>
           </div>
         </CardContent>
@@ -66,21 +91,19 @@ export default function ProfilePage() {
             <div>
               <p className="text-xs text-muted-foreground">레벨</p>
               <p className="font-bold">
-                Lv.{DUMMY_USER.level} {levelInfo?.name}
+                Lv.{user.level} {levelInfo?.name}
               </p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">포인트</p>
-              <p className="font-bold text-[#2E75B6]">
-                {DUMMY_USER.points}점
-              </p>
+              <p className="font-bold text-[#2E75B6]">{user.points}점</p>
             </div>
           </div>
           {nextLevel && (
             <div className="text-xs text-muted-foreground">
               다음 레벨까지{" "}
               <span className="font-medium text-foreground">
-                {nextLevel.minPoints - DUMMY_USER.points}점
+                {nextLevel.minPoints - user.points}점
               </span>{" "}
               남음
             </div>
@@ -92,19 +115,19 @@ export default function ProfilePage() {
       <div className="grid grid-cols-3 gap-3">
         <Card>
           <CardContent className="p-3 text-center">
-            <p className="text-xl font-bold">8</p>
+            <p className="text-xl font-bold">0</p>
             <p className="text-xs text-muted-foreground">작성 글</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-3 text-center">
-            <p className="text-xl font-bold">{DUMMY_USER.likes_received}</p>
+            <p className="text-xl font-bold">{user.likes_received}</p>
             <p className="text-xs text-muted-foreground">받은 따봉</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-3 text-center">
-            <p className="text-xl font-bold">3</p>
+            <p className="text-xl font-bold">0</p>
             <p className="text-xs text-muted-foreground">AI 분석</p>
           </CardContent>
         </Card>
@@ -114,7 +137,7 @@ export default function ProfilePage() {
 
       {/* 메뉴 */}
       <div className="space-y-1">
-        {DUMMY_USER.auth_level < 2 && (
+        {user.auth_level < 2 && (
           <Link href="/verify">
             <Card className="hover:shadow-sm transition-shadow">
               <CardContent className="p-3 flex items-center gap-3">
@@ -145,7 +168,11 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        <Button variant="ghost" className="w-full justify-start gap-2 text-red-500 mt-4">
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-2 text-red-500 mt-4"
+          onClick={handleLogout}
+        >
           <LogOut className="h-4 w-4" />
           로그아웃
         </Button>
