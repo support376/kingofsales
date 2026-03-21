@@ -30,7 +30,7 @@ function DiagnosisResultContent() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center space-y-2">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#2E75B6] border-t-transparent mx-auto" />
+          <div className="h-8 w-8 animate-spin rounded-full border-3 border-blue-600 border-t-transparent mx-auto" />
           <p className="text-sm text-muted-foreground">결과를 불러오는 중...</p>
         </div>
       </div>
@@ -63,7 +63,7 @@ function DiagnosisResultContent() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-[#2E75B6]" />
+            <Trophy className="h-5 w-5 text-blue-600" />
             강점
           </CardTitle>
         </CardHeader>
@@ -81,7 +81,7 @@ function DiagnosisResultContent() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <Users className="h-5 w-5 text-[#2E75B6]" />
+            <Users className="h-5 w-5 text-blue-600" />
             개선 영역
           </CardTitle>
         </CardHeader>
@@ -106,7 +106,7 @@ function DiagnosisResultContent() {
               key={i}
               className="flex items-start gap-3 rounded-lg border p-3 text-sm"
             >
-              <Download className="h-4 w-4 mt-0.5 text-[#2E75B6] flex-shrink-0" />
+              <Download className="h-4 w-4 mt-0.5 text-blue-600 flex-shrink-0" />
               {r}
             </div>
           ))}
@@ -117,7 +117,7 @@ function DiagnosisResultContent() {
       <div className="space-y-3 pb-4">
         <Link href="/login">
           <Button
-            className="w-full bg-[#2E75B6] hover:bg-[#1B3A5C] text-white"
+            className="w-full bg-blue-600 hover:bg-blue-800 text-white"
             size="lg"
           >
             회원가입하고 전체 결과 보기
@@ -139,7 +139,7 @@ export default function DiagnosisResultPage() {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#2E75B6] border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-3 border-blue-600 border-t-transparent" />
         </div>
       }
     >

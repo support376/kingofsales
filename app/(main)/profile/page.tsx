@@ -2,18 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import {
-  Settings,
-  Shield,
-  FileCheck,
-  ChevronRight,
-  LogOut,
-  LogIn,
-} from "lucide-react";
+import { Settings, Shield, FileCheck, ChevronRight, LogOut, LogIn } from "lucide-react";
 import Link from "next/link";
 import { LEVELS, INDUSTRIES, EXPERIENCE_RANGES } from "@/lib/constants";
 import { useAuth } from "@/lib/auth-context";
@@ -25,23 +16,19 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#2E75B6] border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-3 border-blue-600 border-t-transparent" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 space-y-4 px-4">
-        <LogIn className="h-12 w-12 text-muted-foreground" />
-        <h2 className="text-lg font-bold">로그인이 필요합니다</h2>
-        <p className="text-sm text-muted-foreground text-center">
-          프로필을 확인하려면 먼저 로그인해주세요.
-        </p>
+      <div className="flex flex-col items-center justify-center py-20 space-y-4 px-5">
+        <LogIn className="h-10 w-10 text-gray-300" />
+        <p className="text-[15px] font-bold text-gray-900">로그인이 필요합니다</p>
+        <p className="text-[13px] text-gray-500 text-center">프로필을 확인하려면 먼저 로그인해주세요.</p>
         <Link href="/login">
-          <Button className="bg-[#2E75B6] hover:bg-[#1B3A5C] text-white">
-            로그인하기
-          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white text-[13px] rounded-full px-6">로그인하기</Button>
         </Link>
       </div>
     );
@@ -52,130 +39,88 @@ export default function ProfilePage() {
   const industryLabel = INDUSTRIES.find((i) => i.value === user.industry)?.label || user.industry;
   const expLabel = EXPERIENCE_RANGES.find((e) => e.value === user.experience_years)?.label || user.experience_years;
 
-  const handleLogout = async () => {
-    await logout();
-    router.push("/");
-  };
+  const handleLogout = async () => { await logout(); router.push("/"); };
 
   return (
-    <div className="space-y-4 px-4 py-4">
+    <div>
       {/* 프로필 헤더 */}
-      <Card>
-        <CardContent className="p-6 flex items-center gap-4">
-          <Avatar className="h-16 w-16">
-            <AvatarFallback className="text-lg bg-[#2E75B6] text-white">
-              {user.nickname[0]}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 space-y-1">
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold">{user.nickname}</h2>
-              {user.auth_level >= 2 && (
-                <Badge className="bg-[#2E75B6] text-white text-xs">인증</Badge>
-              )}
-            </div>
-            <p className="text-sm text-muted-foreground">{user.bio}</p>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{industryLabel}</span>
-              <span>·</span>
-              <span>{expLabel}</span>
-            </div>
+      <div className="bg-white px-5 py-5 flex items-center gap-4">
+        <Avatar className="h-14 w-14">
+          <AvatarFallback className="text-[15px] font-bold bg-blue-600 text-white">{user.nickname[0]}</AvatarFallback>
+        </Avatar>
+        <div className="flex-1 space-y-0.5">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[15px] font-bold text-gray-900">{user.nickname}</span>
+            {user.auth_level >= 2 && (
+              <Badge className="bg-blue-100 text-blue-700 text-[10px] h-4 px-1 font-normal">인증</Badge>
+            )}
           </div>
-        </CardContent>
-      </Card>
-
-      {/* 레벨 & 포인트 */}
-      <Card>
-        <CardContent className="p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">레벨</p>
-              <p className="font-bold">
-                Lv.{user.level} {levelInfo?.name}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-muted-foreground">포인트</p>
-              <p className="font-bold text-[#2E75B6]">{user.points}점</p>
-            </div>
-          </div>
-          {nextLevel && (
-            <div className="text-xs text-muted-foreground">
-              다음 레벨까지{" "}
-              <span className="font-medium text-foreground">
-                {nextLevel.minPoints - user.points}점
-              </span>{" "}
-              남음
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* 활동 통계 */}
-      <div className="grid grid-cols-3 gap-3">
-        <Card>
-          <CardContent className="p-3 text-center">
-            <p className="text-xl font-bold">0</p>
-            <p className="text-xs text-muted-foreground">작성 글</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-3 text-center">
-            <p className="text-xl font-bold">{user.likes_received}</p>
-            <p className="text-xs text-muted-foreground">받은 따봉</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-3 text-center">
-            <p className="text-xl font-bold">0</p>
-            <p className="text-xs text-muted-foreground">AI 분석</p>
-          </CardContent>
-        </Card>
+          <p className="text-[13px] text-gray-500">{user.bio}</p>
+          <p className="text-[11px] text-gray-400">{industryLabel} · {expLabel}</p>
+        </div>
       </div>
 
-      <Separator />
+      {/* 레벨 & 포인트 */}
+      <div className="bg-white mt-2 px-5 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[11px] text-gray-400">레벨</p>
+            <p className="text-[15px] font-bold text-gray-900">Lv.{user.level} {levelInfo?.name}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-[11px] text-gray-400">포인트</p>
+            <p className="text-[15px] font-bold text-blue-600">{user.points}점</p>
+          </div>
+        </div>
+        {nextLevel && (
+          <p className="text-[11px] text-gray-400 mt-2">
+            다음 레벨까지 <span className="font-medium text-gray-700">{nextLevel.minPoints - user.points}점</span> 남음
+          </p>
+        )}
+      </div>
+
+      {/* 활동 통계 */}
+      <div className="bg-white mt-2 px-5 py-4">
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { label: "작성 글", value: 0 },
+            { label: "받은 따봉", value: user.likes_received },
+            { label: "AI 분석", value: 0 },
+          ].map((s, i) => (
+            <div key={i} className="bg-gray-50 rounded-lg p-3 text-center">
+              <p className="text-[17px] font-bold text-gray-900">{s.value}</p>
+              <p className="text-[11px] text-gray-400">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* 메뉴 */}
-      <div className="space-y-1">
+      <div className="bg-white mt-2">
         {user.auth_level < 2 && (
-          <Link href="/verify">
-            <Card className="hover:shadow-sm transition-shadow">
-              <CardContent className="p-3 flex items-center gap-3">
-                <FileCheck className="h-5 w-5 text-[#2E75B6]" />
-                <span className="flex-1 text-sm font-medium">인증하기</span>
-                <Badge variant="outline" className="text-xs text-amber-600">
-                  미인증
-                </Badge>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </CardContent>
-            </Card>
+          <Link href="/verify" className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-50">
+            <FileCheck className="h-5 w-5 text-blue-600" />
+            <span className="flex-1 text-[13px] font-medium text-gray-900">인증하기</span>
+            <Badge className="bg-amber-100 text-amber-700 text-[10px] h-4 px-1 font-normal">미인증</Badge>
+            <ChevronRight className="h-4 w-4 text-gray-300" />
           </Link>
         )}
+        <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-50">
+          <Settings className="h-5 w-5 text-gray-400" />
+          <span className="flex-1 text-[13px] text-gray-700">설정</span>
+          <ChevronRight className="h-4 w-4 text-gray-300" />
+        </div>
+        <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-50">
+          <Shield className="h-5 w-5 text-gray-400" />
+          <span className="flex-1 text-[13px] text-gray-700">개인정보처리방침</span>
+          <ChevronRight className="h-4 w-4 text-gray-300" />
+        </div>
+      </div>
 
-        <Card>
-          <CardContent className="p-3 flex items-center gap-3">
-            <Settings className="h-5 w-5 text-muted-foreground" />
-            <span className="flex-1 text-sm">설정</span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-3 flex items-center gap-3">
-            <Shield className="h-5 w-5 text-muted-foreground" />
-            <span className="flex-1 text-sm">개인정보처리방침</span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          </CardContent>
-        </Card>
-
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-2 text-red-500 mt-4"
-          onClick={handleLogout}
-        >
-          <LogOut className="h-4 w-4" />
-          로그아웃
-        </Button>
+      <div className="bg-white mt-2 px-5 py-3">
+        <button onClick={handleLogout} className="flex items-center gap-2 text-[13px] text-red-500">
+          <LogOut className="h-4 w-4" /> 로그아웃
+        </button>
       </div>
     </div>
   );

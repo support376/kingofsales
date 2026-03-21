@@ -73,30 +73,30 @@ export default function DiagnosisPage() {
   };
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-lg flex-col bg-background">
+    <div className="mx-auto flex min-h-screen max-w-lg flex-col bg-gray-50">
       {/* 헤더 */}
-      <div className="sticky top-0 z-10 bg-background px-4 pt-4 pb-2">
+      <div className="sticky top-0 z-10 bg-white px-5 pt-4 pb-2 border-b border-gray-50">
         <div className="flex items-center gap-3">
           {step > 1 && (
             <button onClick={() => setStep(step - 1)}>
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5 text-gray-500" />
             </button>
           )}
           <div className="flex-1">
-            <Progress value={(step / TOTAL_STEPS) * 100} className="h-2" />
+            <Progress value={(step / TOTAL_STEPS) * 100} className="h-1.5" />
           </div>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-[11px] text-gray-400">
             {step}/{TOTAL_STEPS}
           </span>
         </div>
       </div>
 
-      <div className="flex-1 px-4 py-6">
+      <div className="flex-1 px-5 py-5">
         {/* Step 1: 업종 */}
         {step === 1 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-bold">어떤 영역에서 영업하세요?</h2>
-            <p className="text-sm text-muted-foreground">해당하는 업종을 선택하세요</p>
+            <h2 className="text-[17px] font-bold text-gray-900">어떤 영역에서 영업하세요?</h2>
+            <p className="text-[13px] text-gray-500">해당하는 업종을 선택하세요</p>
             <div className="grid grid-cols-3 gap-2">
               {INDUSTRIES.map(({ value, label, icon }) => (
                 <Card
@@ -104,14 +104,14 @@ export default function DiagnosisPage() {
                   className={cn(
                     "cursor-pointer transition-all",
                     industry === value
-                      ? "border-[#2E75B6] bg-[#2E75B6]/5 ring-2 ring-[#2E75B6]"
-                      : "hover:border-[#2E75B6]/50"
+                      ? "border-blue-600 bg-blue-50 ring-2 ring-blue-600"
+                      : "hover:border-blue-300"
                   )}
                   onClick={() => setIndustry(value)}
                 >
                   <CardContent className="flex flex-col items-center gap-1.5 p-3">
                     <span className="text-2xl">{icon}</span>
-                    <span className="text-xs font-medium text-center leading-tight">{label}</span>
+                    <span className="text-[11px] font-medium text-center leading-tight text-gray-700">{label}</span>
                   </CardContent>
                 </Card>
               ))}
@@ -122,7 +122,7 @@ export default function DiagnosisPage() {
         {/* Step 2: 경력 */}
         {step === 2 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-bold">영업 경력이 어떻게 되세요?</h2>
+            <h2 className="text-[17px] font-bold text-gray-900">영업 경력이 어떻게 되세요?</h2>
             <div className="space-y-2">
               {EXPERIENCE_RANGES.map(({ value, label }) => (
                 <Card
@@ -130,8 +130,8 @@ export default function DiagnosisPage() {
                   className={cn(
                     "cursor-pointer transition-all",
                     experience === value
-                      ? "border-[#2E75B6] bg-[#2E75B6]/5 ring-2 ring-[#2E75B6]"
-                      : "hover:border-[#2E75B6]/50"
+                      ? "border-blue-600 bg-blue-50 ring-2 ring-blue-600"
+                      : "hover:border-blue-300"
                   )}
                   onClick={() => setExperience(value)}
                 >
@@ -147,7 +147,7 @@ export default function DiagnosisPage() {
         {/* Step 3: 연봉 */}
         {step === 3 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-bold">
+            <h2 className="text-[17px] font-bold text-gray-900">
               현재 연 수입은 어느 구간인가요?
             </h2>
             <div className="space-y-2">
@@ -157,8 +157,8 @@ export default function DiagnosisPage() {
                   className={cn(
                     "cursor-pointer transition-all",
                     income === value
-                      ? "border-[#2E75B6] bg-[#2E75B6]/5 ring-2 ring-[#2E75B6]"
-                      : "hover:border-[#2E75B6]/50"
+                      ? "border-blue-600 bg-blue-50 ring-2 ring-blue-600"
+                      : "hover:border-blue-300"
                   )}
                   onClick={() => setIncome(value)}
                 >
@@ -174,8 +174,8 @@ export default function DiagnosisPage() {
         {/* Step 4: 성장 희망 영역 */}
         {step === 4 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-bold">가장 키우고 싶은 영역은?</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="text-[17px] font-bold text-gray-900">가장 키우고 싶은 영역은?</h2>
+            <p className="text-[13px] text-gray-500">
               복수 선택 가능합니다
             </p>
             <div className="grid grid-cols-2 gap-3">
@@ -185,8 +185,8 @@ export default function DiagnosisPage() {
                   className={cn(
                     "cursor-pointer transition-all",
                     growthNeeds.includes(value)
-                      ? "border-[#2E75B6] bg-[#2E75B6]/5 ring-2 ring-[#2E75B6]"
-                      : "hover:border-[#2E75B6]/50"
+                      ? "border-blue-600 bg-blue-50 ring-2 ring-blue-600"
+                      : "hover:border-blue-300"
                   )}
                   onClick={() => toggleNeed(value)}
                 >
@@ -202,7 +202,7 @@ export default function DiagnosisPage() {
         {/* Step 5: 확인 */}
         {step === 5 && (
           <div className="space-y-4 text-center">
-            <h2 className="text-xl font-bold">진단 준비 완료!</h2>
+            <h2 className="text-[17px] font-bold text-gray-900">진단 준비 완료!</h2>
             <p className="text-muted-foreground">
               입력하신 정보를 기반으로
               <br />
@@ -233,9 +233,9 @@ export default function DiagnosisPage() {
       </div>
 
       {/* 하단 버튼 */}
-      <div className="sticky bottom-0 bg-background px-4 py-4 safe-bottom">
+      <div className="sticky bottom-0 bg-white px-4 py-4 safe-bottom">
         <Button
-          className="w-full bg-[#2E75B6] hover:bg-[#1B3A5C] text-white"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white"
           size="lg"
           disabled={!canNext() || loading}
           onClick={next}
