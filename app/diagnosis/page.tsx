@@ -96,7 +96,8 @@ export default function DiagnosisPage() {
         {step === 1 && (
           <div className="space-y-4">
             <h2 className="text-xl font-bold">어떤 영역에서 영업하세요?</h2>
-            <div className="grid grid-cols-2 gap-3">
+            <p className="text-sm text-muted-foreground">해당하는 업종을 선택하세요</p>
+            <div className="grid grid-cols-3 gap-2">
               {INDUSTRIES.map(({ value, label, icon }) => (
                 <Card
                   key={value}
@@ -108,9 +109,9 @@ export default function DiagnosisPage() {
                   )}
                   onClick={() => setIndustry(value)}
                 >
-                  <CardContent className="flex flex-col items-center gap-2 p-4">
-                    <span className="text-3xl">{icon}</span>
-                    <span className="text-sm font-medium">{label}</span>
+                  <CardContent className="flex flex-col items-center gap-1.5 p-3">
+                    <span className="text-2xl">{icon}</span>
+                    <span className="text-xs font-medium text-center leading-tight">{label}</span>
                   </CardContent>
                 </Card>
               ))}

@@ -26,6 +26,17 @@ export type Industry =
   | "automotive"
   | "b2b"
   | "finance"
+  | "medical"
+  | "pharma"
+  | "education"
+  | "it_telecom"
+  | "distribution"
+  | "advertising"
+  | "manufacturing"
+  | "beauty_life"
+  | "trade"
+  | "recruiting"
+  | "legal_accounting"
   | "other";
 
 export type ExperienceRange =
