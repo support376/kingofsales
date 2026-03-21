@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, LogIn, Search } from "lucide-react";
+import { Bell, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/lib/auth-context";
@@ -11,7 +11,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
-      <div className="mx-auto flex h-12 max-w-lg items-center justify-between px-4">
+      <div className="flex h-12 items-center justify-between px-5">
         <Link href="/" className="text-lg font-extrabold tracking-tight text-gray-900">
           영업왕
         </Link>
@@ -35,7 +35,7 @@ export default function Header() {
               </>
             ) : (
               <Link href="/login">
-                <Button size="sm" variant="ghost" className="text-blue-600 font-medium text-sm h-8">
+                <Button size="sm" variant="ghost" className="text-blue-600 font-medium text-[13px] h-8">
                   로그인
                 </Button>
               </Link>

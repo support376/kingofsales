@@ -185,7 +185,7 @@ export default function CommunityPage() {
       {canWrite && (
         <Link
           href="/community/write"
-          className="fixed bottom-[72px] right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg active:bg-blue-700 transition-colors"
+          className="fixed bottom-[70px] right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg active:bg-blue-700 transition-colors"
         >
           <PenSquare className="h-5 w-5" />
         </Link>

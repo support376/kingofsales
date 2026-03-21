@@ -7,9 +7,9 @@ export default function MobileShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto flex min-h-screen max-w-lg flex-col bg-gray-50">
+    <div className="mx-auto flex min-h-screen w-full max-w-lg flex-col bg-gray-50">
       <Header />
-      <main className="flex-1 pb-16">{children}</main>
+      <main className="flex-1 pb-14">{children}</main>
       <BottomNav />
     </div>
   );

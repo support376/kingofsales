@@ -17,20 +17,17 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 safe-bottom">
-      <div className="mx-auto flex h-14 max-w-lg items-center justify-around">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 w-full max-w-lg bg-white border-t border-gray-100 safe-bottom">
+      <div className="flex h-14 items-center justify-around px-2">
         {items.map(({ label, href, icon: Icon }) => {
-          const active =
-            href === "/" ? pathname === "/" : pathname.startsWith(href);
+          const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
             <Link
               key={href}
               href={href}
               className={cn(
                 "flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium transition-colors",
-                active
-                  ? "text-gray-900"
-                  : "text-gray-400"
+                active ? "text-gray-900" : "text-gray-400"
               )}
             >
               <Icon className={cn("h-[22px] w-[22px]", active && "stroke-[2.5px]")} />
