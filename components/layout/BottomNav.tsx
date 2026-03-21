@@ -10,15 +10,15 @@ const items = [
   { label: "커뮤니티", href: "/community", icon: MessageSquare },
   { label: "AI봇", href: "/ai-bot", icon: Bot },
   { label: "리더보드", href: "/leaderboard", icon: Trophy },
-  { label: "내정보", href: "/profile", icon: User },
+  { label: "MY", href: "/profile", icon: User },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background safe-bottom">
-      <div className="mx-auto flex h-16 max-w-lg items-center justify-around">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 safe-bottom">
+      <div className="mx-auto flex h-14 max-w-lg items-center justify-around">
         {items.map(({ label, href, icon: Icon }) => {
           const active =
             href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -27,13 +27,13 @@ export default function BottomNav() {
               key={href}
               href={href}
               className={cn(
-                "flex flex-col items-center gap-0.5 px-3 py-1 text-xs transition-colors",
+                "flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium transition-colors",
                 active
-                  ? "text-[#2E75B6] font-semibold"
-                  : "text-muted-foreground"
+                  ? "text-gray-900"
+                  : "text-gray-400"
               )}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className={cn("h-[22px] w-[22px]", active && "stroke-[2.5px]")} />
               <span>{label}</span>
             </Link>
           );

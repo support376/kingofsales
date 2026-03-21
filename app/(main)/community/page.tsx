@@ -3,12 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PenSquare, ThumbsUp, MessageCircle, LogIn } from "lucide-react";
 import { POST_CATEGORIES } from "@/lib/constants";
 import { useAuth } from "@/lib/auth-context";
+import { cn } from "@/lib/utils";
 import type { PostCategory } from "@/types";
 
 interface PostItem {
@@ -20,7 +19,18 @@ interface PostItem {
   comments_count: number;
   is_verified_only: boolean;
   created_at: string;
-  users?: { nickname: string; profile_image: string | null; auth_level: number; level: number };
+  users?: { nickname: string; auth_level: number; level: number };
+}
+
+function timeAgo(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "방금";
+  if (mins < 60) return `${mins}분 전`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}시간 전`;
+  const days = Math.floor(hours / 24);
+  return `${days}일 전`;
 }
 
 export default function CommunityPage() {
@@ -45,122 +55,139 @@ export default function CommunityPage() {
       .catch(() => setLoading(false));
   }, [category, sort]);
 
-  // 비로그인: 읽기 전용 안내
   const isGuest = !authLoading && !user;
   const canWrite = user && user.auth_level >= 1;
 
   return (
-    <div className="space-y-4">
-      {/* 비로그인 안내 */}
+    <div>
+      {/* 비로그인 배너 */}
       {isGuest && (
-        <div className="mx-4 mt-4 rounded-lg bg-amber-50 border border-amber-200 p-3 text-center">
-          <p className="text-sm text-amber-800">
-            커뮤니티 글쓰기는 로그인 후 이용 가능합니다.
-          </p>
+        <div className="bg-blue-50 px-5 py-3 flex items-center justify-between">
+          <p className="text-[12px] text-blue-700">로그인하고 커뮤니티에 참여하세요</p>
           <Link href="/login">
-            <Button size="sm" className="mt-2 gap-1 bg-[#2E75B6]">
-              <LogIn className="h-3 w-3" /> 로그인
+            <Button size="sm" className="h-7 text-[11px] bg-blue-600 rounded-full px-3">
+              로그인
             </Button>
           </Link>
         </div>
       )}
 
-      {/* 카테고리 탭 */}
-      <div className="overflow-x-auto px-4 pt-4">
-        <Tabs
-          value={category}
-          onValueChange={(v) => setCategory(v as typeof category)}
-        >
-          <TabsList className="inline-flex w-auto">
-            <TabsTrigger value="all">전체</TabsTrigger>
-            {POST_CATEGORIES.map((cat) => (
-              <TabsTrigger key={cat.value} value={cat.value}>
-                {cat.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+      {/* 카테고리 탭 - 블라인드 스타일 */}
+      <div className="bg-white border-b border-gray-100 overflow-x-auto scrollbar-hide">
+        <div className="flex px-4 gap-0.5">
+          {[{ value: "all" as const, label: "전체" }, ...POST_CATEGORIES].map((cat) => (
+            <button
+              key={cat.value}
+              onClick={() => setCategory(cat.value as typeof category)}
+              className={cn(
+                "shrink-0 px-3 py-2.5 text-[13px] font-medium border-b-2 transition-colors",
+                category === cat.value
+                  ? "text-gray-900 border-gray-900"
+                  : "text-gray-400 border-transparent hover:text-gray-600"
+              )}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* 정렬 */}
-      <div className="flex items-center gap-2 px-4">
-        <Button
-          variant={sort === "latest" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setSort("latest")}
-        >
-          최신
-        </Button>
-        <Button
-          variant={sort === "popular" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setSort("popular")}
-        >
-          인기
-        </Button>
+      <div className="bg-white px-4 py-2 flex items-center gap-3 border-b border-gray-50">
+        {(["latest", "popular"] as const).map((s) => (
+          <button
+            key={s}
+            onClick={() => setSort(s)}
+            className={cn(
+              "text-[12px] font-medium",
+              sort === s ? "text-gray-900" : "text-gray-400"
+            )}
+          >
+            {s === "latest" ? "최신순" : "인기순"}
+          </button>
+        ))}
       </div>
 
-      {/* 게시글 리스트 */}
-      <div className="space-y-2 px-4 pb-4">
+      {/* 피드 */}
+      <div>
         {loading ? (
-          <div className="py-8 text-center text-sm text-muted-foreground">
+          <div className="py-16 text-center text-[13px] text-gray-400">
             불러오는 중...
           </div>
         ) : posts.length === 0 ? (
-          <Card>
-            <CardContent className="p-6 text-center text-sm text-muted-foreground">
-              아직 게시글이 없습니다. 첫 번째 글을 작성해보세요!
-            </CardContent>
-          </Card>
+          <div className="bg-white py-16 text-center">
+            <p className="text-[13px] text-gray-400">아직 게시글이 없습니다</p>
+            {canWrite && (
+              <Link href="/community/write">
+                <Button size="sm" className="mt-3 rounded-full bg-blue-600 text-[12px]">
+                  첫 글 작성하기
+                </Button>
+              </Link>
+            )}
+          </div>
         ) : (
           posts
             .filter((post) => {
-              // Lv.2 미만은 인증전용 게시글 안 보임
               if (post.is_verified_only && (!user || user.auth_level < 2)) return false;
               return true;
             })
             .map((post) => (
               <Link key={post.id} href={`/community/${post.id}`}>
-                <Card className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
-                        {POST_CATEGORIES.find((c) => c.value === post.category)?.label}
+                <article className="bg-white px-5 py-4 border-b border-gray-50 active:bg-gray-50 transition-colors">
+                  {/* 상단: 카테고리 + 작성자 */}
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <span className="text-[11px] font-medium text-blue-600">
+                      {POST_CATEGORIES.find((c) => c.value === post.category)?.label}
+                    </span>
+                    {post.is_verified_only && (
+                      <Badge className="bg-amber-100 text-amber-700 text-[10px] h-4 px-1 font-normal">
+                        인증전용
                       </Badge>
-                      {post.is_verified_only && (
-                        <Badge className="bg-amber-500 text-white text-xs">인증전용</Badge>
-                      )}
-                      {post.users?.auth_level === 2 && (
-                        <Badge className="bg-[#2E75B6] text-white text-xs">인증</Badge>
-                      )}
-                    </div>
-                    <h3 className="font-semibold text-sm line-clamp-1">{post.title}</h3>
-                    <p className="text-xs text-muted-foreground line-clamp-2">{post.content}</p>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
-                      <span>{post.users?.nickname || "익명"}</span>
-                      <div className="flex items-center gap-3">
-                        <span className="flex items-center gap-1">
-                          <ThumbsUp className="h-3 w-3" /> {post.likes_count}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MessageCircle className="h-3 w-3" /> {post.comments_count}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    )}
+                    <span className="text-[11px] text-gray-300">·</span>
+                    <span className="text-[11px] text-gray-400">
+                      {post.users?.nickname || "익명"}
+                    </span>
+                    {post.users?.auth_level === 2 && (
+                      <Badge className="bg-blue-100 text-blue-700 text-[10px] h-4 px-1 font-normal">
+                        인증
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* 제목 */}
+                  <h3 className="text-[14px] font-semibold text-gray-900 line-clamp-2 leading-snug">
+                    {post.title}
+                  </h3>
+
+                  {/* 본문 미리보기 */}
+                  <p className="text-[13px] text-gray-500 mt-1 line-clamp-2 leading-relaxed">
+                    {post.content}
+                  </p>
+
+                  {/* 하단: 좋아요 + 댓글 + 시간 */}
+                  <div className="flex items-center gap-3 mt-2.5 text-[11px] text-gray-400">
+                    <span className="flex items-center gap-1">
+                      <ThumbsUp className="h-3 w-3" /> {post.likes_count}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MessageCircle className="h-3 w-3" /> {post.comments_count}
+                    </span>
+                    <span>{timeAgo(post.created_at)}</span>
+                  </div>
+                </article>
               </Link>
             ))
         )}
       </div>
 
-      {/* 글쓰기 FAB - Lv.1 이상만 */}
+      {/* FAB */}
       {canWrite && (
         <Link
           href="/community/write"
-          className="fixed bottom-20 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#2E75B6] text-white shadow-lg hover:bg-[#1B3A5C] transition-colors"
+          className="fixed bottom-[72px] right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg active:bg-blue-700 transition-colors"
         >
-          <PenSquare className="h-6 w-6" />
+          <PenSquare className="h-5 w-5" />
         </Link>
       )}
     </div>
