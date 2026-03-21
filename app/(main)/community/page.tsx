@@ -1,93 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PenSquare, ThumbsUp, MessageCircle, Bot } from "lucide-react";
+import { PenSquare, ThumbsUp, MessageCircle, LogIn } from "lucide-react";
 import { POST_CATEGORIES } from "@/lib/constants";
-import type { Post, PostCategory } from "@/types";
+import { useAuth } from "@/lib/auth-context";
+import type { PostCategory } from "@/types";
 
-// MVP 더미 데이터
-const DUMMY_POSTS: (Post & { author: NonNullable<Post["author"]> })[] = [
-  {
-    id: "1",
-    user_id: "u1",
-    category: "knowhow",
-    title: "보험 영업 첫 달, 콜드콜 100통의 교훈",
-    content:
-      "처음 한 달 동안 매일 20통씩 콜드콜을 했습니다. 처음엔 거절이 두려웠지만...",
-    action_type: "cheat",
-    action_points: 15,
-    likes_count: 24,
-    comments_count: 8,
-    is_verified_only: false,
-    created_at: "2026-03-20T09:00:00Z",
-    author: {
-      nickname: "보험왕김대리",
-      profile_image: null,
-      auth_level: 2,
-      level: 3,
-    },
-  },
-  {
-    id: "2",
-    user_id: "u2",
-    category: "success",
-    title: "B2B SaaS 영업 3년차, 연봉 2배 올린 비결",
-    content: "스타트업에서 엔터프라이즈로 타겟을 바꾸면서 모든 게 달라졌습니다...",
-    action_type: "success",
-    action_points: 20,
-    likes_count: 42,
-    comments_count: 15,
-    is_verified_only: false,
-    created_at: "2026-03-19T14:00:00Z",
-    author: {
-      nickname: "SaaS마스터",
-      profile_image: null,
-      auth_level: 2,
-      level: 4,
-    },
-  },
-  {
-    id: "3",
-    user_id: "u3",
-    category: "qna",
-    title: "부동산 영업 시작하려는데 어떤 준비가 필요할까요?",
-    content: "현재 직장을 그만두고 부동산 영업으로 전환하려고 합니다...",
-    action_type: null,
-    action_points: 0,
-    likes_count: 5,
-    comments_count: 12,
-    is_verified_only: false,
-    created_at: "2026-03-18T20:00:00Z",
-    author: {
-      nickname: "전직희망자",
-      profile_image: null,
-      auth_level: 1,
-      level: 1,
-    },
-  },
-];
+interface PostItem {
+  id: string;
+  category: string;
+  title: string;
+  content: string;
+  likes_count: number;
+  comments_count: number;
+  is_verified_only: boolean;
+  created_at: string;
+  users?: { nickname: string; profile_image: string | null; auth_level: number; level: number };
+}
 
 export default function CommunityPage() {
+  const { user, loading: authLoading } = useAuth();
   const [category, setCategory] = useState<"all" | PostCategory>("all");
   const [sort, setSort] = useState<"latest" | "popular">("latest");
+  const [posts, setPosts] = useState<PostItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered =
-    category === "all"
-      ? DUMMY_POSTS
-      : DUMMY_POSTS.filter((p) => p.category === category);
+  useEffect(() => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (category !== "all") params.set("category", category);
+    params.set("sort", sort);
 
-  const sorted = [...filtered].sort((a, b) => {
-    if (sort === "popular") return b.likes_count - a.likes_count;
-    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-  });
+    fetch(`/api/posts?${params}`)
+      .then((r) => r.json())
+      .then((res) => {
+        setPosts(res.posts || []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [category, sort]);
+
+  // 비로그인: 읽기 전용 안내
+  const isGuest = !authLoading && !user;
+  const canWrite = user && user.auth_level >= 1;
 
   return (
     <div className="space-y-4">
+      {/* 비로그인 안내 */}
+      {isGuest && (
+        <div className="mx-4 mt-4 rounded-lg bg-amber-50 border border-amber-200 p-3 text-center">
+          <p className="text-sm text-amber-800">
+            커뮤니티 글쓰기는 로그인 후 이용 가능합니다.
+          </p>
+          <Link href="/login">
+            <Button size="sm" className="mt-2 gap-1 bg-[#2E75B6]">
+              <LogIn className="h-3 w-3" /> 로그인
+            </Button>
+          </Link>
+        </div>
+      )}
+
       {/* 카테고리 탭 */}
       <div className="overflow-x-auto px-4 pt-4">
         <Tabs
@@ -125,54 +102,67 @@ export default function CommunityPage() {
 
       {/* 게시글 리스트 */}
       <div className="space-y-2 px-4 pb-4">
-        {sorted.map((post) => (
-          <Link key={post.id} href={`/community/${post.id}`}>
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs">
-                    {
-                      POST_CATEGORIES.find((c) => c.value === post.category)
-                        ?.label
-                    }
-                  </Badge>
-                  {post.author.auth_level === 2 && (
-                    <Badge className="bg-[#2E75B6] text-white text-xs">
-                      인증
-                    </Badge>
-                  )}
-                </div>
-                <h3 className="font-semibold text-sm line-clamp-1">
-                  {post.title}
-                </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">
-                  {post.content}
-                </p>
-                <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
-                  <span>{post.author.nickname}</span>
-                  <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1">
-                      <ThumbsUp className="h-3 w-3" /> {post.likes_count}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MessageCircle className="h-3 w-3" />{" "}
-                      {post.comments_count}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+        {loading ? (
+          <div className="py-8 text-center text-sm text-muted-foreground">
+            불러오는 중...
+          </div>
+        ) : posts.length === 0 ? (
+          <Card>
+            <CardContent className="p-6 text-center text-sm text-muted-foreground">
+              아직 게시글이 없습니다. 첫 번째 글을 작성해보세요!
+            </CardContent>
+          </Card>
+        ) : (
+          posts
+            .filter((post) => {
+              // Lv.2 미만은 인증전용 게시글 안 보임
+              if (post.is_verified_only && (!user || user.auth_level < 2)) return false;
+              return true;
+            })
+            .map((post) => (
+              <Link key={post.id} href={`/community/${post.id}`}>
+                <Card className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        {POST_CATEGORIES.find((c) => c.value === post.category)?.label}
+                      </Badge>
+                      {post.is_verified_only && (
+                        <Badge className="bg-amber-500 text-white text-xs">인증전용</Badge>
+                      )}
+                      {post.users?.auth_level === 2 && (
+                        <Badge className="bg-[#2E75B6] text-white text-xs">인증</Badge>
+                      )}
+                    </div>
+                    <h3 className="font-semibold text-sm line-clamp-1">{post.title}</h3>
+                    <p className="text-xs text-muted-foreground line-clamp-2">{post.content}</p>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
+                      <span>{post.users?.nickname || "익명"}</span>
+                      <div className="flex items-center gap-3">
+                        <span className="flex items-center gap-1">
+                          <ThumbsUp className="h-3 w-3" /> {post.likes_count}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MessageCircle className="h-3 w-3" /> {post.comments_count}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))
+        )}
       </div>
 
-      {/* 글쓰기 FAB */}
-      <Link
-        href="/community/write"
-        className="fixed bottom-20 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#2E75B6] text-white shadow-lg hover:bg-[#1B3A5C] transition-colors"
-      >
-        <PenSquare className="h-6 w-6" />
-      </Link>
+      {/* 글쓰기 FAB - Lv.1 이상만 */}
+      {canWrite && (
+        <Link
+          href="/community/write"
+          className="fixed bottom-20 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#2E75B6] text-white shadow-lg hover:bg-[#1B3A5C] transition-colors"
+        >
+          <PenSquare className="h-6 w-6" />
+        </Link>
+      )}
     </div>
   );
 }

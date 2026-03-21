@@ -8,27 +8,44 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/lib/auth-context";
 
 export default function SignupPage() {
   const router = useRouter();
+  const { refresh } = useAuth();
   const [nickname, setNickname] = useState("");
   const [bio, setBio] = useState("");
   const [phone, setPhone] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [codeSent, setCodeSent] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const handleSendCode = () => {
-    // TODO: SMS 인증 API 연동
-    setCodeSent(true);
-  };
+  const [error, setError] = useState("");
 
   const handleSubmit = async () => {
+    if (!nickname.trim() || !phone.trim()) return;
     setLoading(true);
-    // TODO: 회원가입 API + 진단 데이터 연동
-    setTimeout(() => {
+    setError("");
+
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nickname, phone, bio }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "가입에 실패했습니다.");
+        setLoading(false);
+        return;
+      }
+
+      // 세션 갱신 후 홈으로
+      await refresh();
       router.push("/");
-    }, 1000);
+    } catch {
+      setError("네트워크 오류가 발생했습니다.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,34 +64,22 @@ export default function SignupPage() {
         </CardContent>
       </Card>
 
+      {error && (
+        <Card className="bg-red-50 border-red-200">
+          <CardContent className="p-3 text-xs text-red-700">{error}</CardContent>
+        </Card>
+      )}
+
       <div className="space-y-4">
-        {/* 휴대폰 인증 */}
+        {/* 휴대폰 */}
         <div className="space-y-2">
           <Label>휴대폰 번호 *</Label>
-          <div className="flex gap-2">
-            <Input
-              placeholder="01012345678"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              type="tel"
-              className="flex-1"
-            />
-            <Button
-              variant="outline"
-              onClick={handleSendCode}
-              disabled={codeSent || phone.length < 10}
-            >
-              {codeSent ? "재전송" : "인증"}
-            </Button>
-          </div>
-          {codeSent && (
-            <Input
-              placeholder="인증번호 6자리"
-              value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
-              maxLength={6}
-            />
-          )}
+          <Input
+            placeholder="01012345678"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            type="tel"
+          />
         </div>
 
         {/* 닉네임 */}
@@ -102,7 +107,6 @@ export default function SignupPage() {
           />
         </div>
 
-        {/* 경고 문구 */}
         <p className="text-xs text-amber-600">
           입력하신 정보는 자기신고 기반이며, 허위 입력 시 추후 인증 요청에
           불이익이 있을 수 있습니다.

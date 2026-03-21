@@ -14,28 +14,56 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogIn } from "lucide-react";
 import { POST_CATEGORIES } from "@/lib/constants";
+import { useAuth } from "@/lib/auth-context";
 import type { PostCategory } from "@/types";
 
 export default function WritePage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [category, setCategory] = useState<PostCategory | "">("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // 비로그인 또는 Lv.0 차단
+  if (!authLoading && (!user || user.auth_level < 1)) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 space-y-4 px-4">
+        <LogIn className="h-12 w-12 text-muted-foreground" />
+        <h2 className="text-lg font-bold">로그인이 필요합니다</h2>
+        <p className="text-sm text-muted-foreground text-center">
+          글쓰기는 회원만 이용 가능합니다.
+        </p>
+        <Link href="/login">
+          <Button className="bg-[#2E75B6] hover:bg-[#1B3A5C] text-white">로그인하기</Button>
+        </Link>
+      </div>
+    );
+  }
+
   const canSubmit = category && title.trim() && content.trim();
 
   const handleSubmit = async () => {
-    if (!canSubmit) return;
+    if (!canSubmit || !user) return;
     setLoading(true);
 
-    // TODO: API 연동
-    // MVP에서는 바로 커뮤니티로 이동
-    setTimeout(() => {
+    try {
+      await fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: user.id,
+          category,
+          title,
+          content,
+        }),
+      });
       router.push("/community");
-    }, 500);
+    } catch {
+      setLoading(false);
+    }
   };
 
   return (

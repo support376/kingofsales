@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
     .from("leaderboard_data")
     .select("*", { count: "exact" })
     .eq("visible", true)
+    .order("is_verified", { ascending: false })
     .order("rank_score", { ascending: false })
     .range(offset, offset + limit - 1);
 
