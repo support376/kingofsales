@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Bot, Trophy, MessageSquare, Zap } from "lucide-react";
+import { ArrowRight, Headphones, GraduationCap, MessageSquare, Zap } from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -28,10 +28,10 @@ export default function HomePage() {
       <div className="bg-white px-5 py-4">
         <div className="grid grid-cols-4 gap-3">
           {[
-            { icon: MessageSquare, label: "커뮤니티", href: "/community", color: "text-blue-600 bg-blue-50" },
-            { icon: Bot, label: "AI 코치", href: "/coach", color: "text-violet-600 bg-violet-50" },
-            { icon: Trophy, label: "리더보드", href: "/leaderboard", color: "text-amber-600 bg-amber-50" },
-            { icon: Zap, label: "인증하기", href: "/verify", color: "text-green-600 bg-green-50" },
+            { icon: Headphones, label: "코파일럿", href: "/copilot", color: "text-violet-600 bg-violet-50" },
+            { icon: GraduationCap, label: "코칭받기", href: "/coaching", color: "text-blue-600 bg-blue-50" },
+            { icon: MessageSquare, label: "커뮤니티", href: "/community", color: "text-emerald-600 bg-emerald-50" },
+            { icon: Zap, label: "인증하기", href: "/verify", color: "text-amber-600 bg-amber-50" },
           ].map(({ icon: Icon, label, href, color }) => (
             <Link
               key={href}
@@ -80,17 +80,17 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* AI 코치 배너 */}
-      <Link href="/coach" className="block">
+      {/* 코파일럿 배너 */}
+      <Link href="/copilot" className="block">
         <div className="bg-white px-5 py-4">
-          <div className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-blue-50 to-violet-50 p-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600">
-              <Bot className="h-5 w-5 text-white" />
+          <div className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-violet-50 to-blue-50 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-600">
+              <Headphones className="h-5 w-5 text-white" />
             </div>
             <div className="flex-1">
-              <p className="text-[13px] font-bold text-gray-900">AI 세일즈 코치</p>
+              <p className="text-[13px] font-bold text-gray-900">AI 코파일럿</p>
               <p className="text-[11px] text-gray-500 mt-0.5">
-                통화 녹음을 분석하고 피드백을 받아보세요
+                통화를 업로드하고 AI 분석 + 메모를 남겨보세요
               </p>
             </div>
             <ArrowRight className="h-4 w-4 text-gray-400" />

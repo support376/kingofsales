@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, MessageSquare, Bot, Trophy, User } from "lucide-react";
+import { Home, MessageSquare, Headphones, GraduationCap, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { label: "홈", href: "/", icon: Home },
   { label: "커뮤니티", href: "/community", icon: MessageSquare },
-  { label: "AI코치", href: "/coach", icon: Bot },
-  { label: "리더보드", href: "/leaderboard", icon: Trophy },
+  { label: "코파일럿", href: "/copilot", icon: Headphones },
+  { label: "코칭", href: "/coaching", icon: GraduationCap },
   { label: "MY", href: "/profile", icon: User },
 ];
 

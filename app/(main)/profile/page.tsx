@@ -1,17 +1,29 @@
 "use client";
 
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Settings, Shield, FileCheck, ChevronRight, LogOut, LogIn } from "lucide-react";
+import { Settings, Shield, FileCheck, ChevronRight, LogOut, LogIn, TrendingUp, Trophy } from "lucide-react";
 import Link from "next/link";
 import { LEVELS, INDUSTRIES, EXPERIENCE_RANGES } from "@/lib/constants";
 import { useAuth } from "@/lib/auth-context";
+import {
+  getAllStats,
+  getGroupStats,
+  calculatePercentile,
+  incomeRangeToSalary,
+} from "@/lib/market-data";
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, loading, logout } = useAuth();
+
+  const userSalary = user ? incomeRangeToSalary(user.income_range) : 4000;
+  const allStats = useMemo(() => getAllStats(), []);
+  const myGroupStats = user ? getGroupStats(user.industry) : null;
+  const myPercentile = user ? calculatePercentile(user.industry, userSalary) : 50;
 
   if (loading) {
     return (
@@ -79,13 +91,56 @@ export default function ProfilePage() {
         )}
       </div>
 
+      {/* 내 위치 (리더보드) */}
+      <div className="bg-white mt-2 px-5 py-4">
+        <div className="flex items-center gap-1.5 mb-3">
+          <Trophy className="h-4 w-4 text-blue-600" />
+          <p className="text-[13px] font-bold text-gray-900">내 위치</p>
+        </div>
+
+        {/* 내 업종 내 위치 */}
+        <div className="rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 p-4">
+          <p className="text-[11px] text-blue-200">{industryLabel} 영업직 중</p>
+          <div className="flex items-end justify-between mt-1">
+            <div>
+              <p className="text-[28px] font-bold text-white">상위 {myPercentile}%</p>
+              <p className="text-[11px] text-blue-200 mt-0.5">내 연봉 {userSalary.toLocaleString()}만원</p>
+            </div>
+            <div className="flex items-center gap-1 text-green-300 text-[12px] font-medium">
+              <TrendingUp className="h-3.5 w-3.5" /> +3%
+            </div>
+          </div>
+        </div>
+
+        {/* 업계 평균 비교 */}
+        <div className="mt-3 space-y-2">
+          {[
+            { label: "내 연봉", value: `${userSalary.toLocaleString()}만원`, highlight: true },
+            { label: `${industryLabel} 평균`, value: `${myGroupStats?.avg?.toLocaleString() || "-"}만원`, highlight: false },
+            { label: `${industryLabel} 상위 10%`, value: `${myGroupStats?.topPct?.toLocaleString() || "-"}만원`, highlight: false },
+            { label: "전체 영업직 평균", value: `${allStats.avg.toLocaleString()}만원`, highlight: false },
+          ].map((row, i) => (
+            <div key={i} className="flex items-center justify-between py-1.5">
+              <span className="text-[12px] text-gray-500">{row.label}</span>
+              <span className={`text-[12px] font-medium ${row.highlight ? "text-blue-600 font-bold" : "text-gray-900"}`}>
+                {row.value}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <Link href="/leaderboard" className="flex items-center justify-center gap-1 mt-3 text-[12px] text-blue-600 font-medium">
+          상세 보기 <ChevronRight className="h-3 w-3" />
+        </Link>
+      </div>
+
       {/* 활동 통계 */}
       <div className="bg-white mt-2 px-5 py-4">
         <div className="grid grid-cols-3 gap-3">
           {[
             { label: "작성 글", value: 0 },
             { label: "받은 따봉", value: user.likes_received },
-            { label: "AI 분석", value: 0 },
+            { label: "콜 분석", value: 0 },
           ].map((s, i) => (
             <div key={i} className="bg-gray-50 rounded-lg p-3 text-center">
               <p className="text-[17px] font-bold text-gray-900">{s.value}</p>
