@@ -50,45 +50,44 @@ export const GROWTH_NEEDS: { value: GrowthNeed; label: string }[] = [
   { value: "other", label: "기타" },
 ];
 
-// ===== 커뮤니티 카테고리 =====
+// ===== 커뮤니티 카테고리 (v4.0: 3탭 + 전체) =====
 export const POST_CATEGORIES: { value: PostCategory; label: string }[] = [
-  { value: "intro", label: "자유게시판" },
-  { value: "knowhow", label: "노하우 공유" },
-  { value: "qna", label: "Q&A" },
-  { value: "success", label: "성공사례" },
-  { value: "failure", label: "실패분석" },
+  { value: "free", label: "자유게시판" },
+  { value: "knowhow_qa", label: "노하우·Q&A" },
   { value: "call_review", label: "콜리뷰" },
 ];
 
-// ===== 행동 포인트 =====
+// ===== 행동 포인트 (v4.0) =====
 export const ACTION_POINTS: Record<ActionType, number> = {
-  cheat: 15,
-  call_review: 20,
-  peer: 25,
-  success: 20,
-  failure: 25,
-  challenge: 30,
-  volunteer: 35,
+  call_review_upload: 20,
+  daily_record: 10,
+  post: 10,
+  comment: 3,
+  like_received: 5,
+  peer_review: 15,
+  streak_7day: 50,
 };
 
 // ===== 레벨 =====
 export const LEVELS = [
-  { level: 1, name: "신입 영업인", minPoints: 0 },
-  { level: 2, name: "성장 중", minPoints: 100 },
-  { level: 3, name: "실력파", minPoints: 300 },
-  { level: 4, name: "고수", minPoints: 700 },
-  { level: 5, name: "영업왕", minPoints: 1500 },
+  { level: 1, name: "신입", minPoints: 0 },
+  { level: 2, name: "실전파", minPoints: 500 },
+  { level: 3, name: "프로", minPoints: 2000 },
+  { level: 4, name: "마스터", minPoints: 5000 },
+  { level: 5, name: "클로저", minPoints: 15000 },
 ] as const;
 
-// ===== AI봇 쿼터 =====
-export const AI_BOT_QUOTA = {
+// ===== AI 코치 쿼터 =====
+export const AI_COACH_QUOTA = {
   1: 1, // Lv.1: 하루 1회
   2: 3, // Lv.2: 하루 3회
 } as const;
 
 // ===== 브랜딩 =====
 export const BRAND = {
-  name: "영업왕",
+  name: "Closr",
+  nameKo: "클로저",
+  tagline: "AI 세일즈 코치 + 성장 플랫폼",
   primaryColor: "#1B3A5C",
   accentColor: "#2E75B6",
 } as const;
@@ -97,7 +96,7 @@ export const BRAND = {
 export const NAV_ITEMS = [
   { label: "홈", href: "/", icon: "Home" },
   { label: "커뮤니티", href: "/community", icon: "MessageSquare" },
-  { label: "AI봇", href: "/ai-bot", icon: "Bot" },
+  { label: "AI코치", href: "/coach", icon: "Bot" },
   { label: "리더보드", href: "/leaderboard", icon: "Trophy" },
-  { label: "내정보", href: "/profile", icon: "User" },
+  { label: "MY", href: "/profile", icon: "User" },
 ] as const;

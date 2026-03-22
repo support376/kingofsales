@@ -28,7 +28,7 @@ const SCORE_ITEMS = [
   { key: "objection", label: "반론 처리", icon: Shield },
 ] as const;
 
-export default function AiBotPage() {
+export default function CoachPage() {
   const { user, loading: authLoading } = useAuth();
   const [state, setState] = useState<AnalysisState>("idle");
   const [quota, setQuota] = useState({ used: 0, limit: 1, remaining: 1 });
@@ -37,7 +37,7 @@ export default function AiBotPage() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`/api/ai-bot/quota?user_id=${user.id}&auth_level=${authLevel}`)
+    fetch(`/api/coach/quota?user_id=${user.id}&auth_level=${authLevel}`)
       .then((r) => r.json()).then(setQuota).catch(() => {});
   }, [user, authLevel]);
 
@@ -46,7 +46,7 @@ export default function AiBotPage() {
       <div className="flex flex-col items-center justify-center py-20 space-y-4 px-5">
         <LogIn className="h-10 w-10 text-gray-300" />
         <p className="text-[15px] font-bold text-gray-900">로그인이 필요합니다</p>
-        <p className="text-[13px] text-gray-500 text-center">AI 세일즈 봇은 회원만 이용 가능합니다.</p>
+        <p className="text-[13px] text-gray-500 text-center">AI 코치는 회원만 이용 가능합니다.</p>
         <Link href="/login">
           <Button className="bg-blue-600 hover:bg-blue-700 text-white text-[13px] rounded-full px-6">로그인하기</Button>
         </Link>
@@ -110,7 +110,7 @@ export default function AiBotPage() {
 
         <div className="bg-white mt-2 px-5 py-4 flex gap-2">
           <Button variant="outline" className="flex-1 h-9 text-[13px]" onClick={() => setState("idle")}>새 분석</Button>
-          <Link href="/ai-bot/history" className="flex-1">
+          <Link href="/coach/history" className="flex-1">
             <Button variant="outline" className="w-full h-9 text-[13px] gap-1"><History className="h-3.5 w-3.5" /> 이력</Button>
           </Link>
         </div>
@@ -121,7 +121,7 @@ export default function AiBotPage() {
   return (
     <div>
       <div className="bg-white px-5 py-5 text-center">
-        <p className="text-[17px] font-bold text-gray-900">AI 세일즈 봇</p>
+        <p className="text-[17px] font-bold text-gray-900">AI 세일즈 코치</p>
         <p className="text-[13px] text-gray-500 mt-1">세일즈 콜을 녹음하고 AI가 분석해드립니다</p>
       </div>
 
@@ -170,7 +170,7 @@ export default function AiBotPage() {
           </div>
 
           <div className="bg-white mt-2 px-5 py-3">
-            <Link href="/ai-bot/history" className="flex items-center justify-center gap-1 text-[13px] text-gray-500">
+            <Link href="/coach/history" className="flex items-center justify-center gap-1 text-[13px] text-gray-500">
               <History className="h-3.5 w-3.5" /> 분석 이력 보기
             </Link>
           </div>

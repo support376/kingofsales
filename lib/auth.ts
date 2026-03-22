@@ -21,7 +21,7 @@ export const DEMO_USER: User = {
   updated_at: "2026-03-22T00:00:00Z",
 };
 
-const SESSION_KEY = "salesking_session";
+const SESSION_KEY = "closr_session";
 
 /** 로그인 (쿠키에 세션 저장) */
 export async function demoLogin(): Promise<User> {

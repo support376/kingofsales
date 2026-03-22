@@ -29,7 +29,7 @@ export default function HomePage() {
         <div className="grid grid-cols-4 gap-3">
           {[
             { icon: MessageSquare, label: "커뮤니티", href: "/community", color: "text-blue-600 bg-blue-50" },
-            { icon: Bot, label: "AI 분석", href: "/ai-bot", color: "text-violet-600 bg-violet-50" },
+            { icon: Bot, label: "AI 코치", href: "/coach", color: "text-violet-600 bg-violet-50" },
             { icon: Trophy, label: "리더보드", href: "/leaderboard", color: "text-amber-600 bg-amber-50" },
             { icon: Zap, label: "인증하기", href: "/verify", color: "text-green-600 bg-green-50" },
           ].map(({ icon: Icon, label, href, color }) => (
@@ -80,8 +80,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* AI 봇 배너 */}
-      <Link href="/ai-bot" className="block">
+      {/* AI 코치 배너 */}
+      <Link href="/coach" className="block">
         <div className="bg-white px-5 py-4">
           <div className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-blue-50 to-violet-50 p-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600">

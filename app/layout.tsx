@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "영업왕 - 세일즈 전문 커뮤니티",
+  title: "Closr - AI 세일즈 코치 + 성장 플랫폼",
   description:
-    "세일즈 인재를 발굴하고, 성장시키고, 수익화하는 세일즈 전문 커뮤니티 플랫폼",
+    "매 통화를 분석하고, 매일의 개선을 추적하고, 동료와 함께 성장하는 AI 세일즈 코치 + 성장 플랫폼",
   manifest: "/manifest.json",
 };
 

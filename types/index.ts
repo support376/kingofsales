@@ -63,21 +63,18 @@ export type GrowthNeed =
   | "other";
 
 export type PostCategory =
-  | "intro"
-  | "knowhow"
-  | "qna"
-  | "success"
-  | "failure"
+  | "free"
+  | "knowhow_qa"
   | "call_review";
 
 export type ActionType =
-  | "cheat"
-  | "call_review"
-  | "peer"
-  | "success"
-  | "failure"
-  | "challenge"
-  | "volunteer";
+  | "call_review_upload"
+  | "daily_record"
+  | "post"
+  | "comment"
+  | "like_received"
+  | "peer_review"
+  | "streak_7day";
 
 // ===== Verification =====
 export interface Verification {

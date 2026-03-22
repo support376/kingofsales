@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const items = [
   { label: "홈", href: "/", icon: Home },
   { label: "커뮤니티", href: "/community", icon: MessageSquare },
-  { label: "AI봇", href: "/ai-bot", icon: Bot },
+  { label: "AI코치", href: "/coach", icon: Bot },
   { label: "리더보드", href: "/leaderboard", icon: Trophy },
   { label: "MY", href: "/profile", icon: User },
 ];

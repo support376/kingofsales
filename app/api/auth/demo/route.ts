@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { createServiceClient } from "@/lib/supabase/server";
 import { DEMO_USER } from "@/lib/auth";
 
-const SESSION_COOKIE = "salesking_session";
+const SESSION_COOKIE = "closr_session";
 
 export async function POST() {
   // DB에 데모 유저 upsert

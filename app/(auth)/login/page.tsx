@@ -28,8 +28,8 @@ export default function LoginPage() {
 
       <div className="flex flex-1 flex-col items-center justify-center px-5 space-y-6">
         <div className="text-center space-y-1.5">
-          <h1 className="text-[24px] font-extrabold text-gray-900">영업왕</h1>
-          <p className="text-[13px] text-gray-500">세일즈 전문 커뮤니티에 합류하세요</p>
+          <h1 className="text-[24px] font-extrabold text-gray-900">Closr</h1>
+          <p className="text-[13px] text-gray-500">AI 세일즈 코치와 함께 성장하세요</p>
         </div>
 
         <Button

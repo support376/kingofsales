@@ -1,4 +1,4 @@
-// 엑셀 시장조사 데이터 기반 (SalesKing_시장조사_리더보드데이터.xlsx)
+// 엑셀 시장조사 데이터 기반 (Closr 시장조사 리더보드데이터)
 // 출처: 금감원, 통계청, 잡코리아, 사람인, 한국고용정보원
 
 export interface IndustryData {

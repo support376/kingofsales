@@ -10,11 +10,11 @@ const DUMMY_HISTORY = [
   { id: "3", date: "2026.03.15", duration: "5분 48초", score: 58, industry: "보험" },
 ];
 
-export default function AiBotHistoryPage() {
+export default function CoachHistoryPage() {
   return (
     <div>
       <div className="bg-white px-5 py-3 border-b border-gray-50">
-        <Link href="/ai-bot" className="flex items-center gap-1 text-[13px] text-gray-500">
+        <Link href="/coach" className="flex items-center gap-1 text-[13px] text-gray-500">
           <ArrowLeft className="h-4 w-4" /> 돌아가기
         </Link>
       </div>

@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
-import { getAiBotLimit } from "@/lib/permissions";
+import { getAiCoachLimit } from "@/lib/permissions";
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const userId = url.searchParams.get("user_id");
   const authLevel = parseInt(url.searchParams.get("auth_level") || "1");
 
-  const limit = getAiBotLimit(authLevel);
+  const limit = getAiCoachLimit(authLevel);
 
   if (!userId) {
     return NextResponse.json({ used: 0, limit, remaining: limit });

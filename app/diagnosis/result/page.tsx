@@ -51,7 +51,7 @@ function DiagnosisResultContent() {
       <Card className="bg-gradient-to-br from-[#1B3A5C] to-[#2E75B6] text-white">
         <CardContent className="p-6 text-center space-y-3">
           <Badge variant="secondary" className="bg-white/20 text-white">
-            영업 역량 진단 결과
+            세일즈 역량 진단 결과
           </Badge>
           <h1 className="text-2xl font-bold">{result.type_name}</h1>
           <div className="text-4xl font-bold">상위 {result.percentile}%</div>

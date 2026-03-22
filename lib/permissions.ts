@@ -1,5 +1,5 @@
 import type { User, Post } from "@/types";
-import { AI_BOT_QUOTA } from "./constants";
+import { AI_COACH_QUOTA } from "./constants";
 
 /** 프로필 노출 필드 제어 */
 export function filterProfile(viewerAuthLevel: number, target: User) {
@@ -25,15 +25,15 @@ export function canAccessPost(userAuthLevel: number, post: Post): boolean {
   return userAuthLevel >= 1;
 }
 
-/** AI봇 사용 가능 여부 */
-export function canUseAiBot(authLevel: number, todayCount: number): boolean {
-  const limit = AI_BOT_QUOTA[authLevel as keyof typeof AI_BOT_QUOTA] ?? 0;
+/** AI 코치 사용 가능 여부 */
+export function canUseAiCoach(authLevel: number, todayCount: number): boolean {
+  const limit = AI_COACH_QUOTA[authLevel as keyof typeof AI_COACH_QUOTA] ?? 0;
   return todayCount < limit;
 }
 
-/** AI봇 일일 한도 */
-export function getAiBotLimit(authLevel: number): number {
-  return AI_BOT_QUOTA[authLevel as keyof typeof AI_BOT_QUOTA] ?? 0;
+/** AI 코치 일일 한도 */
+export function getAiCoachLimit(authLevel: number): number {
+  return AI_COACH_QUOTA[authLevel as keyof typeof AI_COACH_QUOTA] ?? 0;
 }
 
 /** 리더보드 접근 권한 */

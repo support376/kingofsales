@@ -97,7 +97,7 @@ function getSalesType(
     return {
       typeName: "잠재력 헌터",
       typeDesc:
-        "기본기는 갖추고 있지만 핵심 스킬 강화가 필요한 단계입니다. AI 봇 분석을 활용해보세요.",
+        "기본기는 갖추고 있지만 핵심 스킬 강화가 필요한 단계입니다. AI 코치 분석을 활용해보세요.",
     };
   }
   return {
@@ -139,7 +139,7 @@ function getRecommendations(
   needs: GrowthNeed[]
 ): string[] {
   const recs: string[] = [];
-  recs.push("AI 세일즈 봇으로 실전 콜을 분석해보세요");
+  recs.push("AI 코치로 실전 콜을 분석해보세요");
   recs.push("커뮤니티에서 같은 업종 선배의 노하우를 확인하세요");
   if (needs.includes("cold_call"))
     recs.push("콜드콜 스크립트 템플릿을 다운로드하세요");

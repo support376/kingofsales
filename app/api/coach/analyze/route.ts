@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
-import { canUseAiBot } from "@/lib/permissions";
+import { canUseAiCoach } from "@/lib/permissions";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   const todayCount = count || 0;
   const level = auth_level ?? 1;
 
-  if (!canUseAiBot(level, todayCount)) {
+  if (!canUseAiCoach(level, todayCount)) {
     return NextResponse.json(
       {
         error: "오늘의 무료 분석 횟수를 초과했습니다.",

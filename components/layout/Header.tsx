@@ -13,7 +13,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
       <div className="flex h-12 items-center justify-between px-5">
         <Link href="/" className="text-lg font-extrabold tracking-tight text-gray-900">
-          영업왕
+          Closr
         </Link>
         <div className="flex items-center gap-1">
           {!loading && (

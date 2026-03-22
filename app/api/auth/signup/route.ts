@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServiceClient } from "@/lib/supabase/server";
 
-const SESSION_COOKIE = "salesking_session";
+const SESSION_COOKIE = "closr_session";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
